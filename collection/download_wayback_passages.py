@@ -178,14 +178,18 @@ def crawl_wayback_machine(
         with open(dataset) as f:
             data = json.load(f)
             for conversation_turn in data:
-                url = conversation_turn['Answer_URL']
-                if url == '' or url.endswith('.pdf'):
+                if conversation_turn['Answer_URL'] == '':
                     continue
-                anchor_sign_pos = url.find('#')
-                if anchor_sign_pos != -1:
-                    url = url.split('#')[0]
 
-                links.add(url)
+                for url in conversation_turn['Answer_URL'].split(' '):
+                    if url.endswith('.pdf'):
+                        continue
+
+                    anchor_sign_pos = url.find('#')
+                    if anchor_sign_pos != -1:
+                        url = url.split('#')[0]
+
+                    links.add(url)
     links = list(links)
 
     output_path = Path(output_dir)
