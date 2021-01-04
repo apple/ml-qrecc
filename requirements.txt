@@ -1,3 +1,9 @@
+Flask==1.1.2
+tensorflow-gpu==1.14
+git+https://github.com/erroneousboat/warc3.git@70aaad539df6707464154040b2e87000f2c01cdf#egg=warc3-master
+newspaper3k==0.2.8
+wayback-machine-archiver==1.6.0
 beautifulsoup4==4.9.3
-pyserini==0.10.0.1
+nltk==3.5
 warcio==1.7.4
+pyserini==0.10.0.1
