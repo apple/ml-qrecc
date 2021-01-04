@@ -76,7 +76,7 @@ def extract_text(html_text: str) -> str:
     output = ''
     for t in text:
         if t.parent.name not in blacklist:
-            output += f'{t.strip()} '
+            output += f'{t} '
 
     return output
 

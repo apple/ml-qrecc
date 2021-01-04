@@ -16,7 +16,7 @@ MIN_PASSAGE_TOKENS = 220
 
 
 def chunk_doc(content: str) -> List[str]:
-    """Given a document, return a list of passages of no more than MIN_PASSAGE_TOKENS tokens."""
+    """Given a document, return a list of passages of no fewer than MIN_PASSAGE_TOKENS tokens / passage until EOF."""
     passages = []
     passage_tokens = []
     lines = content.split('\n')
