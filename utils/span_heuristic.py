@@ -8,11 +8,17 @@ Heuristic for finding a span in some passage that's close to the golden span.
 """
 
 from difflib import SequenceMatcher as SM
-from typing import Tuple
+import re
+import string
+from typing import List, Tuple
 
 from nltk.util import ngrams
 
 from evaluate_qa import compute_f1, compute_f1_from_tokens, get_tokens, normalize_answer
+
+
+ARTICLES_RE = re.compile(r'\b(a|an|the)\b', re.UNICODE)
+EXCLUDED_PUNCTS = set(string.punctuation)
 
 
 def _find_approximate_matching_sequence(context: str, target: str) -> Tuple[str, float]:
@@ -39,18 +45,39 @@ def _find_approximate_matching_sequence(context: str, target: str) -> Tuple[str,
     return max_sim_string, max_sim_val
 
 
+def _normalize_tokens(tokens: List[str], keep_empty_str=True) -> List[str]:
+    """
+    Normalize individual tokens.
+
+    If keep_empty_str is True, this keeps the overall number of tokens the same.
+    A particular token could be normalized to an empty string.
+    """
+    normalized_tokens = []
+    for token in tokens:
+        token = token.lower()
+        token = ''.join(ch for ch in token if ch not in EXCLUDED_PUNCTS)
+        token = re.sub(ARTICLES_RE, '', token)
+        if keep_empty_str or len(token):
+            normalized_tokens.append(token)
+
+    return normalized_tokens
+
+
 def find_closest_span_match(passage: str, gold_answer: str) -> Tuple[str, float]:
     """Heuristic for finding the closest span in a passage relative to some golden answer based on F1 score."""
-    normalized_passage = normalize_answer(passage)
-    normalized_gold_ans = normalize_answer(gold_answer)
-    closest_encompassing_span, closest_encompassing_span_score = _find_approximate_matching_sequence(normalized_passage, normalized_gold_ans)
-    closest_encompassing_span_tok = get_tokens(closest_encompassing_span)
-    gold_answer_tok = get_tokens(gold_answer)
+    closest_encompassing_span, closest_encompassing_span_score = _find_approximate_matching_sequence(passage, gold_answer)
+    closest_encompassing_span_tok = closest_encompassing_span.split()
+    gold_answer_tok = gold_answer.split()
+    closest_encompassing_span_tok_normalized = _normalize_tokens(closest_encompassing_span_tok)
+    gold_answer_tok_normalized = _normalize_tokens(gold_answer_tok, keep_empty_str=False)
 
     best_span, best_score, best_i, best_j = '', 0, None, None
-    for i in range(0, len(closest_encompassing_span_tok)):
-        for j in range(i + 1, len(closest_encompassing_span_tok) + 1):
-            score = compute_f1_from_tokens(gold_answer_tok, closest_encompassing_span_tok[i:j])
+    for i in range(0, len(closest_encompassing_span_tok_normalized)):
+        for j in range(i + 1, len(closest_encompassing_span_tok_normalized) + 1):
+            score = compute_f1_from_tokens(
+                gold_answer_tok_normalized,
+                [t for t in closest_encompassing_span_tok_normalized[i:j] if len(t)],
+            )
             if score > best_score:
                 best_score = score
                 best_i, best_j = i, j
