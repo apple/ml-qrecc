@@ -23,7 +23,7 @@ We used questions in NQ dataset as prompts to create conversations explicitly ba
 For each query we collect query rewrites by resolving references, the resulting query rewrite is a context-independent version of the original (context-dependent) question.
 The rewritten query is then used to with a search engine to answer the question. Each query is also annotated with answer, link to the web page that used to produce the answer.
 
-Each conversation in the dataset contains a unique `Conversation_no`, `Turn_no` unique within a conversation, the original `Question`, `Context`, `Rewrite` and `Answer` with `Answer_URL`.
+Each conversation in the dataset contains a unique `Conversation_no`, `Turn_no` unique within a conversation, the original `Question`, `Context`, `Rewrite`, `Answer` with `Answer_URL` and the `Conversation_source`.
 
 ```json
 {
@@ -36,23 +36,20 @@ Each conversation in the dataset contains a unique `Conversation_no`, `Turn_no` 
   "Answer": "Tesla Inc. is an American automotive and energy company based in Palo Alto, California. The company specializes in electric car manufacturing and, through its SolarCity subsidiary, solar panel manufacturing.",
   "Answer_URL": "https://en.wikipedia.org/wiki/Tesla,_Inc.",
   "Conversation_no": 74,
-  "Turn_no": 2
+  "Turn_no": 2,
+  "Conversation_source": "trec"
 }
 ```
 
 ## Evaluation
 
-### Evaluate performance on Query Rewriting task
-
-Coming Soon!
-
 ### Evaluate performance on Retrieval Question Answering task
 
-Coming Soon!
+To evaluate retrieval QA, use [evaluate_retrieval.py](https://github.com/apple/ml-qrecc/blob/main/utils/evaluate_retrieval.py)
 
 ### Evaluate performance on Extractive Question Answering task
 
-Coming Soon!
+To evaluate extractive QA, use [evaluate_qa.py](https://github.com/apple/ml-qrecc/blob/main/utils/evaluate_qa.py)
 
 ## Citation
 
@@ -62,8 +59,8 @@ Please cite the following if you found QReCC dataset, our [paper](https://arxiv.
 @article{qrecc,
   title={Open-Domain Question Answering Goes Conversational via Question Rewriting},
   author={Anantha, Raviteja and Vakulenko, Svitlana and Tu, Zhucheng and Longpre, Shayne and Pulman, Stephen and Chappidi, Srinivas},
-  journal={arXiv preprint arXiv:2010.04898},
-  year={2020}
+  journal={Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  year={2021}
 }
 ```
 
