@@ -34,14 +34,14 @@ def get_cc_index_paths() -> List[str]:
     index_paths = []
     with tempfile.NamedTemporaryFile() as temp_f:
         urllib.request.urlretrieve(
-            'https://commoncrawl.s3.amazonaws.com/crawl-data/CC-MAIN-2019-47/cc-index.paths.gz',
+            'https://data.commoncrawl.org/crawl-data/CC-MAIN-2019-47/cc-index.paths.gz',
             temp_f.name,
         )
         with gzip.open(temp_f.name, 'rb') as f:
             for line in f:
                 line = line.decode('utf-8').rstrip()
                 if line.endswith('.gz'):
-                    index_paths.append(f'https://commoncrawl.s3.amazonaws.com/{line}')
+                    index_paths.append(f'https://data.commoncrawl.org/{line}')
 
     return index_paths
 
@@ -51,14 +51,14 @@ def get_cc_wet_paths() -> Dict[str, str]:
     wet_urls = {}
     with tempfile.NamedTemporaryFile() as temp_f:
         urllib.request.urlretrieve(
-            'https://commoncrawl.s3.amazonaws.com/crawl-data/CC-MAIN-2019-47/wet.paths.gz',
+            'https://data.commoncrawl.org/crawl-data/CC-MAIN-2019-47/wet.paths.gz',
             temp_f.name,
         )
         with gzip.open(temp_f.name, 'rb') as f:
             for line in f:
                 line = line.decode('utf-8').rstrip()
                 filename = line.split('/')[-1]
-                wet_urls[filename] = f'https://commoncrawl.s3.amazonaws.com/{line}'
+                wet_urls[filename] = f'https://data.commoncrawl.org/{line}'
 
     return wet_urls
 
